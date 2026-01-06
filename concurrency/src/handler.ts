@@ -1,15 +1,16 @@
 import {IncomingMessage, ServerResponse} from 'http'
-import { readFile } from 'fs'
+import { readFile } from 'fs/promises'
 import { log } from 'console'
+import { endPromise } from './promises'
 
-export const handler = (req: IncomingMessage, res: ServerResponse) => {
-    readFile('data.json', (err: Error | null, data : Buffer) =>{
-        if (err == null){
-            res.end(data, ()=> console.log('File sent'))
-        } else {
-            log(`Error ${err.message}`)
-            res.statusCode = 500
-            res.end()
-        }
-    })
+export const handler = async (req: IncomingMessage, res: ServerResponse) => {
+    try {
+        const data: Buffer = await readFile('data.json')
+        await endPromise.bind(res)(data)
+        log('File sent')
+    } catch (err: any) {
+        console.log(`Error: ${err?.message ?? err}`);
+        res.statusCode = 500;
+        res.end(); 
+    }
 }
