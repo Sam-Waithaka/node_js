@@ -1,16 +1,9 @@
-import {IncomingMessage, ServerResponse} from 'http'
-import { readFile } from 'fs/promises'
-import { log } from 'console'
-import { endPromise } from './promises'
-
+import { log } from "console";
+import { IncomingMessage, ServerResponse } from "http";
 export const handler = async (req: IncomingMessage, res: ServerResponse) => {
-    try {
-        const data: Buffer = await readFile('data.json')
-        await endPromise.bind(res)(data)
-        log('File sent')
-    } catch (err: any) {
-        console.log(`Error: ${err?.message ?? err}`);
-        res.statusCode = 500;
-        res.end(); 
-    }
-}
+    log(`HTTP method ${req.method}, URL: ${req.url}`)
+    log(`host ${JSON.stringify(req.headers)}`)
+    log(`user-agent: ${req.headers["user-agent"]}`)
+    
+    res.end("Hello, World");
+};
