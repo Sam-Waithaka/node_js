@@ -1,31 +1,15 @@
 import { createServer } from "http";
-import { redirectionHandler, newUrlHandler, defaultHandler, notFoundHandler  } from "./handler";
-import { createServer as createHttpsServer } from "https";
-import { readFileSync, readSync } from "fs";
-import express, {Express} from 'express'
+import express, {Express } from "express";
+import { basicHandler } from "./handler";
+
 
 const port = 5000;
-const httpsPort = 5500
-const server = createServer(redirectionHandler);
-
-// server.on("request", handler);
-server.listen(port, () => {
-    console.log(`(Event) Server listening on port ${port}`);
-});
-
-
-const httpsConfig = {
-key: readFileSync('key.pem'),
-cert: readFileSync('cert.pem')
-}
-
 const expressApp: Express = express()
-expressApp.get('/favicon.ico', notFoundHandler)
-expressApp.get('/newurl', newUrlHandler)
-expressApp.get('*', defaultHandler)
-
-const httpsServer = createHttpsServer(httpsConfig, expressApp)
-
-httpsServer.listen(httpsPort, () => {
-    console.log(`(Event) Server listening on port ${httpsPort}`);
-})
+expressApp.get("/favicon.ico", (req, resp) => {
+    resp.statusCode = 404;
+    resp.end();
+});
+expressApp.get("*", basicHandler);
+const server = createServer(expressApp);
+server.listen(port,
+    () => console.log(`HTTP Server listening on port ${port}`));
