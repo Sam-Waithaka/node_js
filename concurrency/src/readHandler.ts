@@ -1,7 +1,8 @@
 import { IncomingMessage, ServerResponse } from "http";
+import { Transform } from "stream";
 export const readHandler = async (req: IncomingMessage, resp: ServerResponse) => {
 
-    req.pipe(resp)
+    req.pipe(createLowerTransform()).pipe(resp)
     // TODO - read request body
     // req.setEncoding('utf-8')
     // req.on('data', (data: string)=>{
@@ -22,3 +23,9 @@ export const readHandler = async (req: IncomingMessage, resp: ServerResponse) =>
 
     // resp.end();
 }
+
+const createLowerTransform = ()=> new Transform ({
+    transform(data, encoding, callback){
+        callback(null, data.toString().toLowerCase())
+    }
+})
