@@ -4,26 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
-const handler_1 = require("./handler");
-const https_1 = require("https");
-const fs_1 = require("fs");
 const express_1 = __importDefault(require("express"));
+const readHandler_1 = require("./readHandler");
 const port = 5000;
-const httpsPort = 5500;
-const server = (0, http_1.createServer)(handler_1.redirectionHandler);
-// server.on("request", handler);
-server.listen(port, () => {
-    console.log(`(Event) Server listening on port ${port}`);
-});
-const httpsConfig = {
-    key: (0, fs_1.readFileSync)('key.pem'),
-    cert: (0, fs_1.readFileSync)('cert.pem')
-};
 const expressApp = (0, express_1.default)();
-expressApp.get('/favicon.ico', handler_1.notFoundHandler);
-expressApp.get('/newurl', handler_1.newUrlHandler);
-expressApp.get('*', handler_1.defaultHandler);
-const httpsServer = (0, https_1.createServer)(httpsConfig, expressApp);
-httpsServer.listen(httpsPort, () => {
-    console.log(`(Event) Server listening on port ${httpsPort}`);
-});
+expressApp.use(express_1.default.json());
+expressApp.post("/read", readHandler_1.readHandler);
+expressApp.use(express_1.default.static("static"));
+expressApp.use(express_1.default.static("node_modules/bootstrap/dist"));
+const server = (0, http_1.createServer)(expressApp);
+server.listen(port, () => console.log(`HTTP Server listening on port ${port}`));
