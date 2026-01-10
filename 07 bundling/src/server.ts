@@ -1,11 +1,23 @@
 import { createServer } from "http";
 import express, {Express } from "express";
 import { readHandler } from "./readHandler";
+import cors from 'cors'
 
 
 const port = 5000;
 const expressApp: Express = express();
 
+
+// expressApp.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//     res.header("Access-Control-Allow-Headers", "Content-Type");
+//     next();
+// });
+
+expressApp.use(cors({
+    origin: 'http://localhost:5100'
+}))
 
 expressApp.use(express.json());
 expressApp.post("/read", readHandler);

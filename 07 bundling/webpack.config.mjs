@@ -7,5 +7,12 @@ export default  {
     output: {
         path: path.resolve(__dirname, "dist/client"),
         filename: "bundle.js"
+    },
+    "devServer": {
+        port: 5100,
+        static: ["./static", "node_modules/bootstrap/dist"],
+        proxy: {
+            '/read': 'http://localhost:5000'
+        }
     }
 }
