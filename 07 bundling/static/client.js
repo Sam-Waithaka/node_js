@@ -13,5 +13,6 @@ sendReq = async () => {
         }
     })
     document.getElementById("msg").textContent = response.statusText;
-    document.getElementById("body").textContent = await response.text();
+    document.getElementById("body").textContent
+        = `Resp: ${await response.text()}`;
 }
